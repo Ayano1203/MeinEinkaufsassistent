@@ -26,10 +26,10 @@ CREATE TABLE IF NOT EXISTS product(
 CREATE TABLE IF NOT EXISTS shoppinglist(
     shoppinglist_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
     product_id INT NOT NULL,
-    amount INT,
+    quantity INT,
     unit VARCHAR(255),
     added_date DATE,
-    status BOOL,
+    status ENUM('offen','erledigt'),
     FOREIGN KEY (product_id)
         REFERENCES product(product_id)
         ON DELETE RESTRICT
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS shoppinglist(
 CREATE TABLE IF NOT EXISTS inventory(
     inventory_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     product_id INT,
-    amount INT,
+    quantity INT,
     unit VARCHAR(255),
     expiry_date DATE,
     storage_id INT,
@@ -74,16 +74,16 @@ INSERT INTO product(name, minimum_stock, unit) VALUES
                            ('Mehl', 2, 'kg'),
                            ('Äpfel', 3,'Stück');
 
-INSERT INTO inventory(product_id, amount, unit, expiry_date, storage_id) VALUES
+INSERT INTO inventory(product_id, quantity, unit, expiry_date, storage_id) VALUES
                       (1,0,'Packung', '2025-11-30',1),
                       (2,3,'Kg', '2026-05-05',2),
                       (3, 8,'Stück', '2025-12-03', 1);
 
 # produkte suchen, die minimum_stock unterstreicht
-SELECT P.name, I.amount, P.minimum_stock
+SELECT P.name, I.quantity, P.minimum_stock
 FROM inventory I
 INNER JOIN product P on I.product_id = p.product_id
-WHERE I.amount < P.minimum_stock;
+WHERE I.quantity < P.minimum_stock;
 
 # produkte von inventory suchen, die innerhalb von 7 Tage expiry_date haben
 SELECT P.name, I.expiry_date
@@ -92,7 +92,10 @@ INNER JOIN product P on I.inventory_id = P.product_id
 WHERE DATEDIFF(I.expiry_date, CURRENT_DATE()) <=7;
 
 # Produkte suchen, die minimum-stock unterstreicht ODER innerhalb von 7 Tagen expiry_date haben
-SELECT P.name, I.amount, I.expiry_date
+SELECT P.name, I.quantity, I.expiry_date
 FROM inventory I
 INNER JOIN product p on I.product_id = p.product_id
-WHERE I.amount < P.minimum_stock OR DATEDIFF(I.expiry_date, CURRENT_DATE()) <=7;
+WHERE I.quantity < P.minimum_stock OR DATEDIFF(I.expiry_date, CURRENT_DATE()) <=7;
+
+INSERT INTO shoppinglist (product_id, quantity, unit, added_date, status)
+VALUES (1,2, 'Packung', current_date(),'offen');

@@ -1,5 +1,17 @@
-<?php
-?>
+<style>
+.container {
+    width: 100%;
+    text-align: center;
+}
+
+.button {
+    width: 15em;
+    height: 3em;
+}
+
+</style>
+
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -10,6 +22,19 @@
     <title>Mein Einkaufsassistent</title>
 </head>
 <body>
-    <h1>Mein Einkaufsassistent</h1>
+    <div class="container">
+        <div class="header">
+            <h1>Mein Einkaufsassistent</h1>
+            <h2>Dashboard</h2>
+        </div>
+        <div class= "content">
+            <a href="/views/read_inventory.php"><input type="button"  class= "button" value="Vorratsliste"></a>
+            <a href="/views/read_shoppingList.php"><input type="button"  class= "button" value="Einkaufsliste"></a>
+            <br><br>
+            <a href="/views/create_inventory.php"><input type="button"  class= "button" value="Vorratsliste hinzufügen"></a>
+            <a href="/views/create_shoppingList.php"><input type="button"  class= "button" value="Einkaufsliste hinzufügen"></a>
+        </div>
+    </div>
 </body>
 </html>
+
