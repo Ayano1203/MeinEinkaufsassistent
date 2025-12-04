@@ -1,0 +1,58 @@
+<?php
+
+
+$manager = new InventoryManager($pdo);
+$allitems = $manager->getAllInventory();
+?>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vorratsliste</title>
+</head>
+<body>
+    <h1>Vorratsliste</h1>
+    <a href="index.php?action=create_inventory"><input type="button"  class= "button" value="Neu hinzufügen"></a>
+    <br><br>
+    <table class="inventoryList" border="1" cellpadding="4" cellspacing="0" >
+        <tr>
+            <th>Warnung</th>
+            <th>Produktname</th>
+            <th>Aktueller Bestand</th>
+            <th>Mindestbestand</th>
+            <th>Unit</th>
+            <th>Ablaufdatum</th>
+            <th>Category</th>
+            <th>Zur Einkaufsliste</th>
+            <th>Löschen</th>
+        </tr>
+        <?php foreach ($allitems as $inventory):  ?>
+        <tr>
+            <td><?php echo $warning = $manager -> checkItemWarning($inventory); ?></td>
+            <td><?php echo $inventory['name']; ?></td>
+            <td><?php echo $inventory['quantity']; ?></td>
+            <td><?php echo $inventory['minimum_stock']; ?></td>
+            <td><?php echo $inventory['unit']; ?></td>
+            <td><?php echo $inventory['expiry_date']; ?></td>
+            <td><?php echo $inventory['category_id']; ?></td>
+            <td><a><button>addieren</button></a></td>
+            <td><a><button>löschen</button></a></td>
+        </tr>
+        <?php endforeach; ?>
+    </table>
+</body>
+</html>
+<style>
+    body, header{
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+    }
+    .inventoryList {
+        width: 100%;
+        justify-content: center;
+    }
+</style>
