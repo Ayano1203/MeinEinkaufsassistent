@@ -2,10 +2,12 @@
 
 include("config/config.php");
 global $pdo;
+
+
 spl_autoload_register(function (string $class) {
     include 'classes/' . $class . '.php';
 });
-
+$manager = new InventoryManager($pdo);
     $action= $_GET['action'] ?? 'dashboard';
     switch ($action) {
         case 'dashboard':
@@ -23,5 +25,11 @@ spl_autoload_register(function (string $class) {
         case 'create_inventory':
             $view = 'create_inventory';
             break;
+        case 'delete_inventory':
+            $inventoryId = $_GET['inventory_id'] ?? null;
+            if ($inventoryId != null) {
+                $manager->deleteInventory((int)$inventoryId);
+            }
+            $view = 'read_inventory';
     }
 include ("views/$view.php");

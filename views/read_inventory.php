@@ -12,6 +12,17 @@ $allitems = $manager->getAllInventory();
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Vorratsliste</title>
+    <style>
+        body, header{
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+        .inventoryList {
+            width: 100%;
+            justify-content: center;
+        }
+    </style>
 </head>
 <body>
     <h1>Vorratsliste</h1>
@@ -39,20 +50,9 @@ $allitems = $manager->getAllInventory();
             <td><?php echo $inventory['expiry_date']; ?></td>
             <td><?php echo $inventory['category_id']; ?></td>
             <td><a><button>addieren</button></a></td>
-            <td><a><button>löschen</button></a></td>
-        </tr>
+            <td><a href="index.php?action=delete_inventory&inventory_id=<?php echo $inventory['inventory_id']; ?>">Löschen</a></td>
+        <tr>
         <?php endforeach; ?>
-    </table>
+            </table>
 </body>
 </html>
-<style>
-    body, header{
-        text-align: center;
-        justify-content: center;
-        align-items: center;
-    }
-    .inventoryList {
-        width: 100%;
-        justify-content: center;
-    }
-</style>

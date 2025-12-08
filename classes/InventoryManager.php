@@ -23,7 +23,7 @@ class InventoryManager
 
     public function getAllInventory(): array
     {
-        $sql = "SELECT P.name, I.quantity, P.minimum_stock, P.unit, I.expiry_date, P.category_id
+        $sql = "SELECT I.inventory_id, P.name, I.quantity, P.minimum_stock, P.unit, I.expiry_date, P.category_id
             FROM inventory I
             INNER JOIN product P on I.product_id = P.product_id";
         $stmt = $this->pdo->prepare($sql);
@@ -45,8 +45,12 @@ class InventoryManager
 
     }
 
-//    public function addInventoryItem($data ):void{
-//        $sql= "INSERT INTO product (product_id, unit,, storage_id)"
-//}
+public function deleteInventory(int $inventory_id): void
+{
+    $sql = "DELETE FROM inventory WHERE inventory_id = :inventory_id";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindParam(":inventory_id", $inventory_id);
+    $stmt->execute();
+}
 
 }
