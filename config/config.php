@@ -1,5 +1,10 @@
 <?php
+spl_autoload_register(function (string $class) {
+    include 'classes/' . $class . '.php';
+});
 // Feste Zugangsdaten
+use MongoDB\Driver\Manager;
+
 $host = '127.0.0.1';
 $db   = 'mein_einkaufsassistent';
 $user = 'root';
@@ -24,6 +29,7 @@ $options = [ //wie PDO sich verhält
 try {
     // Die eigentliche Verbindung
     $pdo = new PDO($dsn, $user, $pass, $options);
+    $manager = new InventoryManager($pdo);
 } catch (\PDOException $e) {
     // Fehlerbehandlung, falls die Verbindung fehlschlägt
     error_log("DB-Verbindugsfehler: ".$e->getMessage());

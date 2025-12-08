@@ -3,6 +3,8 @@
 
 $manager = new InventoryManager($pdo);
 $allitems = $manager->getAllInventory();
+
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -22,7 +24,7 @@ $allitems = $manager->getAllInventory();
             <th>Warnung</th>
             <th>Produktname</th>
             <th>Aktueller Bestand</th>
-            <th>Mindestbestand</th>
+            <th>Minimaler Bestand</th>
             <th>Unit</th>
             <th>Ablaufdatum</th>
             <th>Category</th>
@@ -32,12 +34,12 @@ $allitems = $manager->getAllInventory();
         <?php foreach ($allitems as $inventory):  ?>
         <tr>
             <td><?php echo $warning = $manager -> checkItemWarning($inventory); ?></td>
-            <td><?php echo $inventory['name']; ?></td>
+            <td><?php echo $inventory['product_name']; ?></td>
             <td><?php echo $inventory['quantity']; ?></td>
             <td><?php echo $inventory['minimum_stock']; ?></td>
             <td><?php echo $inventory['unit']; ?></td>
             <td><?php echo $inventory['expiry_date']; ?></td>
-            <td><?php echo $inventory['category_id']; ?></td>
+            <td><?php echo $inventory['category_name']; ?></td>
             <td><a><button>addieren</button></a></td>
             <td><a><button>löschen</button></a></td>
         </tr>
