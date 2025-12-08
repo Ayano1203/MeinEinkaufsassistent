@@ -1,22 +1,14 @@
 <?php
+
 include("config/config.php");
 global $pdo;
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+
 spl_autoload_register(function (string $class) {
     include 'classes/' . $class . '.php';
 });
 $manager = new InventoryManager($pdo);
-
-echo '<pre>';
-print_r($_POST);
-
-
-echo '</pre>';
-
-
-$action= $_GET['action'] ?? 'dashboard';
-//$entity = $_REQUEST['entity'] ?? '';
-
+    $action= $_GET['action'] ?? 'dashboard';
     switch ($action) {
         case 'dashboard':
             $view = 'dashboard';
@@ -32,11 +24,12 @@ $action= $_GET['action'] ?? 'dashboard';
             break;
         case 'create_inventory':
             $view = 'create_inventory';
-            if($_SERVER['REQUEST_METHOD'] == 'POST') {
-                // Daten sind angekommen, speichere sie
-                $manager->addInventoryItem($_POST);
-                $view = 'read_inventory';
-            }
             break;
+        case 'delete_inventory':
+            $inventoryId = $_GET['inventory_id'] ?? null;
+            if ($inventoryId != null) {
+                $manager->deleteInventory((int)$inventoryId);
+            }
+            $view = 'read_inventory';
     }
 include ("views/$view.php");

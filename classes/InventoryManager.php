@@ -52,6 +52,13 @@ class InventoryManager
 
     }
 
+public function deleteInventory(int $inventory_id): void
+{
+    $sql = "DELETE FROM inventory WHERE inventory_id = :inventory_id";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindParam(":inventory_id", $inventory_id);
+    $stmt->execute();
+}
     public function addInventoryItem($data):void
     {
         $cName = $data['category'];                                                //nimmt category name aus $data
@@ -161,4 +168,3 @@ class InventoryManager
     }
 
 }
-
