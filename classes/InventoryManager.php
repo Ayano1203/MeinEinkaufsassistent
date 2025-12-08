@@ -68,23 +68,26 @@ class InventoryManager
     {
         $cId = $data['category_id'];                                                //nimmt category name aus $data
         $pId = $data['product_id'] ?? null;                                         //prüft, ob das Produkt von option ausgewählt
+        $sId = $this->getStorageIdByName($data['storage']);
         if ($pId == null) {
             $pName = $data['new_product_name'] ?? null;
             if (!empty($pName) && $cId !== null) {                                 //Wenn Product name eingegeben wurde und product name nicht empty ist//
                 $pId = $this->createProduct($data, $cId);
             }
         }
-        echo '<pre>';
-        print_r($pId);
-        echo '</pre>';
         if ($pId != null) {                                                        //prüft, ob $pId gültig ist
             //$minimumStock = $this->getMinimumStockByProductId($pId);
             //mit lastInsertId inventory Tabelle hinzufügen
-            $sql = "INSERT INTO inventory(product_id, quantity, expiry_date) VALUES(:product_id, :quantity, :expiry_date);";
+            $sql = "INSERT INTO inventory(product_id,unit, storage_id, quantity, expiry_date) VALUES(:product_id,:unit, :storage_id, :quantity, :expiry_date);";
+            echo '<pre>';
+            print_r($data);
+            echo '</pre>';
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindValue(":product_id", $pId);
             $stmt->bindValue(":quantity", $data['quantity'] ?? 0);
             $stmt->bindValue(":expiry_date", $data['expiry_date'] ?? null);
+            $stmt->bindValue(":storage_id", $sId ?? null);
+            $stmt->bindValue(":unit", $data['unit'] ?? null);
             $stmt->execute();
         }
     }
@@ -201,5 +204,15 @@ class InventoryManager
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getStorageIdByName(string $name): ?int
+    {
+        $sql = "SELECT storage_id FROM storage WHERE LOWER(name) = LOWER(:name);";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':name', $name);
+        $stmt->execute();
+        $result = $stmt->fetchColumn();
+        return $result;
     }
 }

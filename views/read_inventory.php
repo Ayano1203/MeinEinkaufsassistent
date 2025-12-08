@@ -60,6 +60,7 @@ $allitems = $manager->getAllInventory();
             <td><a href="index.php?action=delete_inventory&inventory_id=<?php echo $inventory['inventory_id']; ?>">Löschen</a></td>
         <tr>
         <?php endforeach; ?>
-    </table>
+    </table><br>
+    <a href="index.php?action=dashboard"><input type="button" value="zurück"></a>
 </body>
 </html>
