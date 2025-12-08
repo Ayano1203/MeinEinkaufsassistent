@@ -24,12 +24,26 @@ $manager = new InventoryManager($pdo);
             break;
         case 'create_inventory':
             $view = 'create_inventory';
+            if($_SERVER['REQUEST_METHOD'] == 'POST') {
+                // Daten sind angekommen, speichere sie
+                $manager->addInventoryItem($_POST);
+                $view = 'read_inventory';
+            }
             break;
         case 'delete_inventory':
             $inventoryId = $_GET['inventory_id'] ?? null;
             if ($inventoryId != null) {
                 $manager->deleteInventory((int)$inventoryId);
             }
-            $view = 'read_inventory';
+            header('Location: index.php?action=read_inventory');
+            exit;
+        case 'update_quantity':
+            $inventoryId = $_POST['inventory_id'] ?? null;
+            if ($inventoryId != null) {
+                $manager->updateInventoryItem((int)$inventoryId, (int)$_POST['new_quantity']);
+            }
+            header('Location: index.php?action=read_inventory');
+            exit;
     }
+
 include ("views/$view.php");

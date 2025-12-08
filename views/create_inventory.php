@@ -45,6 +45,7 @@ $manager = new InventoryManager($pdo);
         <option value="Obst">Obst</option>
         <option value="Gemüse">Gemüse</option>
     </select><br>
+    <a href="index.php?action=create_category"><input type='button' value='Neue Kategorie'></a><br>
     <label>Menge : </label>
     <input type='number' name='quantity' min="1" max = "1000" placeholder='quantity'>
     <select name='unit'>

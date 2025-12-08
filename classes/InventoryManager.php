@@ -24,6 +24,8 @@ class InventoryManager
     public function getAllInventory(): array
     {
         $sql = "SELECT 
+                P.product_id,
+                I.inventory_id,
                 P.name AS product_name, 
                 I.quantity, 
                 P.minimum_stock, 
@@ -41,9 +43,11 @@ class InventoryManager
 
     public function checkItemWarning(array $items): string
     {
+        $pId=$items['product_id'];
+        $totalquantity = $this->getTotalProductQuantity($pId);
             if (strtotime('+7days') >= strtotime($items['expiry_date'])) {
                 $warning = 'bald ablaufen';
-            } elseif ($items["quantity"] <= $items["minimum_stock"]) {
+            } elseif ($totalquantity <= $items["minimum_stock"]) {
                 $warning = 'niedriger Bestand ';
             } else {
                 $warning = '⭕';
@@ -166,5 +170,28 @@ public function deleteInventory(int $inventory_id): void
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+public function updateInventoryItem(int $inventory_id, int $new_quantity) :void
+ {
+     if ($new_quantity <= 0) {
+         $this->deleteInventory($inventory_id);
+     }else {
+         $sql = "UPDATE inventory SET quantity =:new_quantity WHERE inventory_id =:inventory_id;";
+         $stmt = $this->pdo->prepare($sql);
+         $stmt->bindParam(':inventory_id', $inventory_id);
+         $stmt->bindParam(':new_quantity', $new_quantity);
+         $stmt->execute();
+     }
+ }
+
+ public function getTotalProductQuantity(int $product_id) :?int
+ {
+     $sql ="SELECT SUM(quantity) FROM inventory WHERE product_id = :product_id;";
+     $stmt = $this->pdo->prepare($sql);
+     $stmt->bindParam(':product_id', $product_id);
+     $stmt->execute();
+     $result = $stmt->fetchColumn();
+     return $result;
+ }
 
 }

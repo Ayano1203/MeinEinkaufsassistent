@@ -46,7 +46,12 @@ $allitems = $manager->getAllInventory();
         <tr>
             <td><?php echo $warning = $manager -> checkItemWarning($inventory); ?></td>
             <td><?php echo $inventory['product_name']; ?></td>
-            <td><?php echo $inventory['quantity']; ?></td>
+            <td><form action ="index.php?action=update_quantity" method="POST">
+                    <input type="hidden" name ="inventory_id" value="<?php echo $inventory['inventory_id']; ?>">
+                    <input type="number" name="new_quantity" value="<?php echo $inventory['quantity']; ?>">
+                    <input type="submit" value="Aktualisieren">
+                </form>
+            </td>
             <td><?php echo $inventory['minimum_stock']; ?></td>
             <td><?php echo $inventory['unit']; ?></td>
             <td><?php echo $inventory['expiry_date']; ?></td>
@@ -55,6 +60,6 @@ $allitems = $manager->getAllInventory();
             <td><a href="index.php?action=delete_inventory&inventory_id=<?php echo $inventory['inventory_id']; ?>">Löschen</a></td>
         <tr>
         <?php endforeach; ?>
-            </table>
+    </table>
 </body>
 </html>
