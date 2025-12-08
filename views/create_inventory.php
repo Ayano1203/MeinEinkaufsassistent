@@ -38,14 +38,20 @@ $manager = new InventoryManager($pdo);
     <label> Oder neues Produkt : </label>
     <input type='text' name='new_product_name' placeholder='Produktname'><br>
     <label>Kategorien : </label>
-    <select name='category'>
+    <select name='category_id'>
+        <?php
+        $categoryList = $manager->getAllCategories();
+        foreach ($categoryList as $category) {
+            echo "<option value='".$category['category_id']."'>".$category['name']."</option>";
+        }
+        ?>
 <!--        die Option muss später von category liste nehmen-->
-        <option value="Milchprodukte">Milchprodukte</option>
-        <option value="Getreide & Backen">Getreide & Backen</option>
-        <option value="Obst">Obst</option>
-        <option value="Gemüse">Gemüse</option>
+<!--        <option value="Milchprodukte">Milchprodukte</option>-->
+<!--        <option value="Getreide & Backen">Getreide & Backen</option>-->
+<!--        <option value="Obst">Obst</option>-->
+<!--        <option value="Gemüse">Gemüse</option>-->
     </select><br>
-    <a href="index.php?action=create_category"><input type='button' value='Neue Kategorie'></a><br>
+<!--    <a href="index.php?action=create_category"><input type='button' value='Neue Kategorie'></a><br>-->
     <label>Menge : </label>
     <input type='number' name='quantity' min="1" max = "1000" placeholder='quantity'>
     <select name='unit'>
