@@ -36,7 +36,9 @@ $manager = new InventoryManager($pdo);
                 echo "<option value='".$product['product_id']."'>".$product['name']."</option>";
             }
             ?>
-        </select><br><br>
+        </select><br>
+        <label> Oder neues Produkt : </label>
+        <input type='text' name='new_product_name' placeholder='Produktname'><br><br>
         <label>Kategorie :</label>
         <select name='category_id'>
             <?php
