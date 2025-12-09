@@ -10,14 +10,14 @@ class ShoppingListManager
     }
     public function getProductsBelowMinimumStock() :array
     {
-        $sql = "SELECT P.product_id, P.name AS product_name , P.minimum_stock, P.unit
+        $sql = "SELECT P.product_id, P.name AS product_name , P.minimum_stock, P.unit, sum(I.quantity) AS total_stock
                 FROM inventory I
-                JOIN product P ON P.product_id = I.product_id;";
+                JOIN product P ON P.product_id = I.product_id
+                GROUP BY product_id
+                HAVING P.minimum_stock <  sum(I.quantity)
+               ;";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
-        print_r($stmt->fetchAll(PDO::FETCH_ASSOC));
         return $stmt->fetchAll();
     }
-    ////                GROUP BY P.product_id
-    //HAVING total_stock < P.minimum_stock"; SUM(I.quantity) AS total_stock
 }

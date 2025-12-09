@@ -2,9 +2,6 @@
 $list_manager = new ShoppingListManager($pdo);
 $manager = new InventoryManager($pdo);
 $lists = $list_manager->getProductsBelowMinimumStock();
-echo '<pre>';
-print_r($lists);
-echo '</pre>';
 ?>
 
 
@@ -25,13 +22,14 @@ echo '</pre>';
         .shoppingListTable {
             width: 100%;
             justify-content: center;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 <h1>Einkafsliste</h1>
-    <form><input type="button" value="Neue List hinzufügen"></form>
-    <table class="shoppingListTable">
+    <a href="index.php?action=create_shoppingList"><form><input type="button" value="Neue List hinzufügen"></form></a><br>
+    <table class="shoppingListTable" border="1" cellpadding="4" cellspacing="0">
         <tr>
             <th>Status</th>
             <th>Produktname</th>
@@ -48,7 +46,7 @@ echo '</pre>';
             <td><input type = "submit" value="löschen"></td>
         </tr>
         <?php endforeach; ?>
-    </table>
+    </table><br>
 <a href="index.php?action=dashboard"><input type="button" value="zurück"></a>
 </body>
 </html>
