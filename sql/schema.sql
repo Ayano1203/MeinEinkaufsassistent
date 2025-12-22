@@ -62,17 +62,27 @@ INSERT INTO category(name) VALUES
                               ('Milchprodukte'),
                               ('Getreide & Backen'),
                               ('Obst'),
-                              ('Gemüse');
-
+                              ('Gemüse'),
+                              ('Molkereiprodukte'),
+                              ('Gewürze'),
+                              ('Gleisch & Fisch'),
+                                ('Getränke'),
+                                ('Haushalt & Reinigung'),
+                                ('Hygiene & Drogerie'),
+                                ('Brot & Snacks');
 INSERT INTO storage(name) VALUES
-                              ('Kühlschlank'),
+                              ('Kühlschrank'),
                               ('Vorratskammer'),
-                              ('Gefrierschrank');
+                              ('Gefrierschrank'),
+                              ('Küchenschrank'),
+                              ('Keller'),
+                              ('Badezimmer'),
+                              ('Abstellraum');
 
-INSERT INTO product(name, minimum_stock, unit) VALUES
-                           ('Milch', 1, 'Packung'),
-                           ('Mehl', 2, 'kg'),
-                           ('Äpfel', 3,'Stück');
+INSERT INTO product(name, minimum_stock,category_ID, unit) VALUES
+                           ('Milch', 1, 1,'Packung'),
+                           ('Mehl', 2, 2,'kg'),
+                           ('Äpfel', 3,2,'Stück');
 
 INSERT INTO inventory(product_id, quantity, unit, expiry_date, storage_id) VALUES
                       (1,0,'Packung', '2025-11-30',1),
@@ -99,4 +109,13 @@ WHERE I.quantity < P.minimum_stock OR DATEDIFF(I.expiry_date, CURRENT_DATE()) <=
 
 INSERT INTO shoppinglist (product_id, quantity, unit, added_date, status)
 VALUES (1,2, 'Packung', current_date(),'offen');
+
+ALTER TABLE shoppinglist
+ADD comments varchar(255);
+
+ALTER TABLE shoppinglist
+ADD difference INT;
+
+ALTER TABLE shoppinglist
+ADD is_manual BOOLEAN;
 

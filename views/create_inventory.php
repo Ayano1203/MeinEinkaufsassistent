@@ -1,5 +1,5 @@
 <?php
-$manager = new InventoryManager($pdo);
+include("config/config.php");
 
 ?>
 <!doctype html>
@@ -25,18 +25,21 @@ $manager = new InventoryManager($pdo);
 <div class="container">
 <h2>Neue Artikel zur Vorratsliste hinzufügen</h2>
 <form method='post' action=''>
-    <lebel>Produkt wählen : </lebel>
-    <select name='product_id'>
-        <option value ="" selected disabled>---Bitte Produkt wählen---</option>
+    <label>Produktname :</label>
+    <input type= "text" list="product_list" name="product_name" id="product_input" placeholder="Produkt wählen oder eingeben...">
+    <datalist id="product_list">
     <?php
-        $productsList = $manager->getAllProducts();
-        foreach ($productsList as $product) {
-            echo "<option value='".$product['product_id']."'>".$product['name']."</option>";
-        }
-        ?>
-    </select>
-    <label> Oder neues Produkt : </label>
-    <input type='text' name='new_product_name' placeholder='Produktname'><br>
+
+    $productsList = $productManager->getAllProducts();
+    foreach ($productsList as $product): ?>
+        <option value="<?= htmlspecialchars($product['name']) ?>">
+    <?php endforeach; ?>
+<!--//        $productsList = $productManager->getAllProducts();-->
+<!--//        foreach ($productsList as $product) {-->
+<!--//            echo "<option value='".$product['product_id']."'>".$product['name']."</option>";-->
+<!--//        }-->
+<!--//        ?>-->
+    </datalist><br><br>
     <label>Kategorien : </label>
     <select name='category_id'>
         <?php
@@ -45,12 +48,7 @@ $manager = new InventoryManager($pdo);
             echo "<option value='".$category['category_id']."'>".$category['name']."</option>";
         }
         ?>
-<!--        die Option muss später von category liste nehmen-->
-<!--        <option value="Milchprodukte">Milchprodukte</option>-->
-<!--        <option value="Getreide & Backen">Getreide & Backen</option>-->
-<!--        <option value="Obst">Obst</option>-->
-<!--        <option value="Gemüse">Gemüse</option>-->
-    </select><br>
+    </select><br><br>
 <!--    <a href="index.php?action=create_category"><input type='button' value='Neue Kategorie'></a><br>-->
     <label>Menge : </label>
     <input type='number' name='quantity' min="1" max = "1000" placeholder='quantity'>
@@ -59,17 +57,20 @@ $manager = new InventoryManager($pdo);
         <option value="Liter">Liter</option>
         <option value="Packung">Packung</option>
         <option value="Gramms">Gramms</option>
-    </select><br>
+    </select><br><br>
     <label>MHD : </label>
-    <input type='date' name='expiry_date'><br>
+    <input type='date' name='expiry_date'><br><br>
     <label>Minimaler Bestand : </label>
     <input type='number' name='minimum_stock' min='0' value='1'>
-    <br>
+    <br><br>
     <lebel>Standort : </lebel>
-    <select name='storage'>
-        <option value="Kühlschrank">Kühlschrank</option>
-        <option value="Vorratskammer">Vorratskammer</option>
-        <option value="Gefrierschrank">Gefrierschrank</option>
+    <select name='storage_id'>
+        <?php
+        $storageList = $manager->getAllStorages();
+        foreach ($storageList as $storage) {
+            echo "<option value='".$storage['storage_id']."'>".$storage['name']."</option>";
+        }
+        ?>
     </select><br><br>
    <input type="submit" class="button" value="Speichern"><br><br>
     <a href="index.php?action=read_inventory"><input type="button" class="button" value="Abbrechen"></a>

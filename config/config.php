@@ -29,7 +29,9 @@ $options = [ //wie PDO sich verhält
 try {
     // Die eigentliche Verbindung
     $pdo = new PDO($dsn, $user, $pass, $options);
-    $manager = new InventoryManager($pdo);
+    $productManager = new ProductManager($pdo);
+    $manager = new InventoryManager($pdo, $productManager);
+    $list = new ShoppingListManager($pdo, $manager, $productManager);
 } catch (\PDOException $e) {
     // Fehlerbehandlung, falls die Verbindung fehlschlägt
     error_log("DB-Verbindugsfehler: ".$e->getMessage());

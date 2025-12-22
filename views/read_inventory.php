@@ -1,7 +1,6 @@
 <?php
+include("config/config.php");
 
-
-$manager = new InventoryManager($pdo);
 $allitems = $manager->getAllInventory();
 
 

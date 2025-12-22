@@ -12,13 +12,16 @@ class InventoryManager
 // 2. Variable (Eigenschaft) deklarieren, um die PDO-Verbindung zu speichern
 // (z.B. private $pdo;)
     private $pdo;
+    private ProductManager $productManager;
+
 
 
 // 3. Den Konstruktor definieren, um die PDO-Verbindung entgegenzunehmen
 
-    public function __construct(PDO $connection)
+    public function __construct(PDO $connection, ProductManager $productManager)
     {
         $this->pdo = $connection;
+        $this->productManager = $productManager;
     }
 
     public function getAllInventory(): array
@@ -45,7 +48,9 @@ class InventoryManager
     {
         $pId = $items['product_id'];
         $totalquantity = $this->getTotalProductQuantity($pId);
-        if (strtotime('+7days') >= strtotime($items['expiry_date'])) {
+        if(strtotime('now') > strtotime($items['expiry_date'])) {
+            $warning = 'abgelaufen';
+        } elseif(strtotime('+7days') >= strtotime($items['expiry_date'])) {
             $warning = 'bald ablaufen';
         } elseif ($totalquantity <= $items["minimum_stock"]) {
             $warning = 'niedriger Bestand ';
@@ -66,13 +71,23 @@ class InventoryManager
 
     public function addInventoryItem($data): void
     {
+//        Array
+//        (
+//            [product_name] => Sojamilch
+//            [category_id] => 1
+//    [quantity] => 2
+//    [unit] => Packung
+//    [expiry_date] => 2026-01-10
+//    [minimum_stock] => 1
+//    [storage] => 1
+//)
         $cId = $data['category_id'];                                                //nimmt category name aus $data
         $pId = $data['product_id'] ?? null;                                         //prüft, ob das Produkt von option ausgewählt
-        $sId = $this->getStorageIdByName($data['storage']);
+        $sId = $data['storage_id'];
         if ($pId == null) {
-            $pName = $data['new_product_name'] ?? null;
+            $pName = $data['product_name'] ?? null;
             if (!empty($pName) && $cId !== null) {                                 //Wenn Product name eingegeben wurde und product name nicht empty ist//
-                $pId = $this->createProduct($data, $cId);
+                $pId = $this->productManager->createProduct($data, $cId);
             }
         }
         if ($pId != null) {                                                        //prüft, ob $pId gültig ist
@@ -109,70 +124,6 @@ class InventoryManager
         $stmt->bindParam(':name', $name);
         $stmt->execute();
         return $this->pdo->lastInsertId();
-    }
-
-    public function getProductIdByName(string $name): ?int
-    {
-        $sql = "SELECT product_id FROM product 
-                  WHERE LOWER(name) = LOWER(:name) 
-                  AND name IS NOT NULL 
-                  AND name != '';";                                    //ignoriert Null und empty
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':name', $name);
-        $stmt->execute();
-        $result = $stmt->fetchColumn();
-        return $result !== false ? (int)$result : null;
-    }
-
-
-    //prüft, ob der product_name schon vorhanden ist.
-    public function uniqueProduct(array $data): bool
-    {
-        //false = nicht unique
-        if ($this->getProductIdByName($data['new_product_name']) !== null) {
-            echo 'Dieses Produkt existiert bereits';
-            return false;
-        }
-        return true;
-    }
-
-
-//product Tabelle hinzufügen
-    public function createProduct(array $data, int $cId): ?int
-    {
-        //wenn da schon gleiches Product gibt:
-        if ($this->uniqueProduct($data) === false) {
-            return null;                                                           //wenn es nicht unique ist, bricht die CreateProduct ab
-        }
-        //die Variable min_stock definieren
-        $min_stock = !empty($data['minimum_stock']) ? $data['minimum_stock'] : 1;
-        $clean_name = trim($data['new_product_name']);
-        $sql = "INSERT INTO product(name, category_ID, minimum_stock, unit) VALUES (:name, :category_ID, :minimum_stock, :unit);";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(':name', $clean_name);
-        $stmt->bindValue(':category_ID', $cId);                         //$cId kann getCategoryNameId und createCategory abrufen
-        $stmt->bindValue(':minimum_stock', $min_stock);
-        $stmt->bindValue(':unit', $data['unit']);
-        $stmt->execute();
-        return $this->pdo->lastInsertId();
-    }
-
-
-    public function getMinimumStockByProductId(int $pId): ?int
-    {
-        $sql = "SELECT minimum_stock FROM product WHERE product_id = :product_id;";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':product_id', $pId);
-        $stmt->execute();
-        return $stmt->fetchColumn();
-    }
-
-    public function getAllProducts(): array
-    {
-        $sql = 'SELECT * FROM product';
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function updateInventoryItem(int $inventory_id, int $new_quantity): void
@@ -213,6 +164,14 @@ class InventoryManager
         $stmt->bindParam(':name', $name);
         $stmt->execute();
         $result = $stmt->fetchColumn();
+        return $result;
+    }
+    public function getAllStorages(): array
+    {
+        $sql = 'SELECT * FROM storage';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
 }
