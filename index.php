@@ -109,6 +109,31 @@ $view='';
             }
             header('Location: index.php?action=read_inventory');
             exit;
+        case 'add_to_shoppingList':
+            $shoppingList_id = $_GET['inventory_id'];
+            $item = $manager->getInventoryById($shoppingList_id);
+            $existingProduct = $productManager->getProductById($item['product_id']);
+            if($existingProduct) {
+                $item['product_id'] = $existingProduct['product_id'];
+                $item['product_name'] = $existingProduct['name'];
+                $item['category_id'] = $existingProduct['category_ID'];
+                $item['unit'] = $existingProduct['unit'];
+            } else {
+                $item['product_id'] = null;
+            }
+            $view = 'add_to_shoppingList';
+            break;
+        case 'sync_to_shoppingList':
+            if($_SERVER['REQUEST_METHOD'] == 'POST') {
+                // Daten sind angekommen, speichere sie
+                $manager->syncToShoppingList($_POST, $list);
+                if(isset($_POST['inventory_id'])) {
+                    $list->deleteShoppingList($_POST['inventory_id']);
+                }
+                header('Location: index.php?action=read_shoppingList');
+                exit;
+            }
+            break;
     }
 
 include ("views/$view.php");

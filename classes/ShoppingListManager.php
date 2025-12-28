@@ -47,7 +47,7 @@ class ShoppingListManager
         // checkt es ob product_name key gibt und nicht null ist, wenn true ist trimmt leerzeichen und
         // setzt den als pName rein , wenn false ist pName = ''
         $pName = isset($data['product_name']) ? trim($data['product_name']) : '';
-        $pId = null;
+        $pId = $data['product_id']?? null;
         //wenn da kein Name gibt, macht es nichts
         if ($pName === '') {
             return;
@@ -273,6 +273,7 @@ class ShoppingListManager
         $stmt->bindValue(":shoppinglist_id", $shoppinglist_id);
         $stmt->execute();
     }
+
 
 }
 

@@ -8,7 +8,7 @@ include "config/config.php";
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>von Einkaufsliste zu Vorratsliste hinzufügen</title>
+    <title>von Vorratsliste zu Einkaufsliste hinzufügen</title>
     <style>
         body, header{
             text-align: center;
@@ -22,7 +22,8 @@ include "config/config.php";
     </style>
 </head>
 <body>
-<form action="index.php?action=sync_to_inventory" method="post">
+<h2>Einkaufsliete hinzufügen</h2>
+<form action="index.php?action=sync_to_shoppingList" method="post">
 <!--    Array-->
 <!--    (-->
 <!--    [shoppinglist_id] => 1-->
@@ -35,14 +36,13 @@ include "config/config.php";
 <!--    [difference] =>-->
 <!--    [is_manual] => 1-->
 <!--    )-->
-<!--    hidden product?id von index - $list->getShoppingListById -->
-    <?php  $product_name = $productManager->getProductNameById($item['product_id']); ?>
+<!--    hidden product_id von index - $list->getShoppingListById -->
     <input type="hidden" name="product_id" value="<?php echo $item['product_id']; ?>">
-    <input type="hidden" name="shoppinglist_id" value="<?php echo $item['shoppinglist_id']; ?>">
+    <input type="hidden" name="inventory_id" value="<?php echo $item['inventory_id']; ?>">
     <p>Product :
-        <input type="text" name="product_name" value="<?php echo $product_name; ?>">
+        <input type="text" name="product_name" value="<?php echo $item['product_name']; ?>">
     </p>
-    <p>Gekaufte Anzahl :
+    <p>Gebrauchte Anzahl :
         <input type="number" name="quantity" min="0" max="100" value="0">
     <select name='unit'>
         <?php
@@ -50,13 +50,6 @@ include "config/config.php";
         echo "<option value='$unit' selected>" . $unit . "</option>";
         ?>
     </select><br><br>
-    </p>
-    <p>Minimum Bestand :
-        <input type="number" name="minimum_stock" min="0" max="100"
-               value="<?php echo $item['minimum_stock']; ?>">
-    </p>
-    <p>Ablaufdatum :
-        <input type="date" name="expiry_date"><br>
     </p>
     <p>Kategorie :
             <?php
@@ -77,18 +70,7 @@ include "config/config.php";
         echo "<option value='$catID' $selected>" . $category['name'] . "</option>";
     }
     ?>
-            </select>
-        </select><br>
-    </p>
-    <p>Standort :
-    <select name='storage_id'>
-        <?php
-        $storageList = $manager->getAllStorages();
-        foreach ($storageList as $storage) {
-            echo "<option value='".$storage['storage_id']."'>".$storage['name']."</option>";
-        }
-        ?>
-    </select><br>
+            </select><br>
     </p>
     <button type="submit">Speichern</button>
 

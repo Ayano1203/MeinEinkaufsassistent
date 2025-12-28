@@ -115,25 +115,6 @@ class InventoryManager
         }
         }
 
-
-    public function getCategoryIdByName(string $name): ?int
-    {
-        $sql = "SELECT category_id FROM category WHERE LOWER(name) = LOWER(:name)";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':name', $name);
-        $stmt->execute();
-        return $stmt->fetchColumn();
-    }
-
-    public function createCategory(string $name): ?int
-    {
-        $sql = "INSERT INTO category(name) VALUES(:name);";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':name', $name);
-        $stmt->execute();
-        return $this->pdo->lastInsertId();
-    }
-
     public function updateInventoryItem(int $inventory_id, int $new_quantity): void
     {
         if ($new_quantity <= 0) {
@@ -182,4 +163,22 @@ class InventoryManager
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
+
+    public function getInventoryById(int $inventory_id): array
+    {
+        $sql = "SELECT * FROM inventory WHERE inventory_id = :inventory_id;";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':inventory_id', $inventory_id);
+        $stmt->execute();
+        return  $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    public function syncToShoppingList(array $data, ShoppingListManager $shoppingListManager): void
+    {
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
+        $shoppingListManager->addShoppingListItem($data);
+
+    }
+
 }

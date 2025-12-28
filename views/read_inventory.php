@@ -42,6 +42,18 @@ $allitems = $manager->getAllInventory();
             <th>Löschen</th>
         </tr>
         <?php foreach ($allitems as $inventory):  ?>
+<!--        [6] => Array-->
+<!--        (-->
+<!--        [product_id] => 6-->
+<!--        [inventory_id] => 26-->
+<!--        [product_name] => Nüsse-->
+<!--        [quantity] => 1-->
+<!--        [minimum_stock] => 1-->
+<!--        [unit] => Packung-->
+<!--        [expiry_date] => 2026-01-29-->
+<!--        [category_name] => Brot & Snacks-->
+<!--        )-->
+
         <tr>
             <td><?php echo $warning = $manager -> checkItemWarning($inventory); ?></td>
             <td><?php echo $inventory['product_name']; ?></td>
@@ -55,7 +67,7 @@ $allitems = $manager->getAllInventory();
             <td><?php echo $inventory['unit']; ?></td>
             <td><?php echo $inventory['expiry_date']; ?></td>
             <td><?php echo $inventory['category_name']; ?></td>
-            <td><a><button type="submit">addieren</button></a></td>
+            <td><a href="index.php?action=add_to_shoppingList&inventory_id=<?php echo $inventory['inventory_id']; ?>"><button type="submit">addieren</button></a></td>
             <td><a href="index.php?action=delete_inventory&inventory_id=<?php echo $inventory['inventory_id']; ?>">Löschen</a></td>
         <tr>
         <?php endforeach; ?>
