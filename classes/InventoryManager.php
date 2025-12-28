@@ -71,6 +71,9 @@ class InventoryManager
 
     public function addInventoryItem($data): void
     {
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
 //        Array
 //        (
 //            [product_name] => Sojamilch
@@ -88,12 +91,17 @@ class InventoryManager
             $pName = $data['product_name'] ?? null;
             if (!empty($pName) && $cId !== null) {                                 //Wenn Product name eingegeben wurde und product name nicht empty ist//
                 $pId = $this->productManager->createProduct($data, $cId);
+                if ($pId == null) {
+                    $pId = $this->productManager->getProductIdByName($data['product_name']);
+                }
             }
         }
+            echo "DEBUG: pIdは " . ($pId ?? 'null') . " です<br>";
         if ($pId != null) {                                                        //prüft, ob $pId gültig ist
-            //$minimumStock = $this->getMinimumStockByProductId($pId);
+            $minimumStock = $this->productManager->getMinimumStockByProductId($pId);
             //mit lastInsertId inventory Tabelle hinzufügen
-            $sql = "INSERT INTO inventory(product_id,unit, storage_id, quantity, expiry_date) VALUES(:product_id,:unit, :storage_id, :quantity, :expiry_date);";
+            $sql = "INSERT INTO inventory(product_id,unit, storage_id, quantity, expiry_date) 
+        VALUES(:product_id,:unit, :storage_id, :quantity, :expiry_date);";
             echo '<pre>';
             print_r($data);
             echo '</pre>';
@@ -105,7 +113,7 @@ class InventoryManager
             $stmt->bindValue(":unit", $data['unit'] ?? null);
             $stmt->execute();
         }
-    }
+        }
 
 
     public function getCategoryIdByName(string $name): ?int

@@ -119,3 +119,5 @@ ADD difference INT;
 ALTER TABLE shoppinglist
 ADD is_manual BOOLEAN;
 
+ALTER TABLE shoppinglist
+ADD COLUMN is_synced TINYINT(1) NOT NULL DEFAULT 0;

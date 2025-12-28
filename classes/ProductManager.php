@@ -67,4 +67,35 @@ class ProductManager
         $stmt->execute();
         return $stmt->fetchColumn();
     }
+    public function getProductById(string $id):array
+    {
+//        Array
+//        (
+//            [0] => Array    ---> 1件だけの結果でもfetch AllだとArrayのなかのArrayという形で出てきてしまう
+//            (
+//                [product_id] => 1
+//            [name] => Milch
+//    [category_ID] => 1
+//            [minimum_stock] => 1
+//            [unit] => Packung
+//        )
+//
+//)
+
+        $sql ="SELECT * FROM product WHERE product_id = :id;";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);   // -> nur fetch!
+    }
+
+    public function getProductNameById($id):string
+    {
+        $sql = "SELECT name FROM product WHERE product_id = :id;";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+
+    }
 }

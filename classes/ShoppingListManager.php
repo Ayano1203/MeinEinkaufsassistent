@@ -35,7 +35,7 @@ class ShoppingListManager
     public function addShoppingListItem($data): void
     {
 //        Array
-//        (
+//
 //            [product_name] => Äpfel
 //            [category_id] => 3
 //    [minimum_stock] => 1
@@ -246,9 +246,35 @@ class ShoppingListManager
         return $totalStock ? (int)$totalStock : 0;
     }
 
+    public function getShoppingListById(int $shoppinglist_id): array
+    {
+        $sql = "SELECT * FROM shoppinglist WHERE shoppinglist_id = :shoppinglist_id;";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt -> bindValue(":shoppinglist_id", $shoppinglist_id);
+        $stmt->execute();
+        return $stmt->FETCH(PDO::FETCH_ASSOC);
+
+    }
+    public function syncToInventory(array $data): void
+    {
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
+        $this->inventoryManager->addInventoryItem($data);
+        $sql = "UPDATE shoppinglist SET is_synced = 1 WHERE shoppinglist_id = :shoppinglist_id;";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(":shoppinglist_id", $data['shoppinglist_id']);
+        $stmt->execute();
+    }
+    public function updatedStatusToCompleted($shoppinglist_id): void
+    {
+        $sql ="UPDATE shoppinglist SET status = 'erledigt' WHERE shoppinglist_id = :shoppinglist_id;";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(":shoppinglist_id", $shoppinglist_id);
+        $stmt->execute();
+    }
 
 }
-
 
 
 

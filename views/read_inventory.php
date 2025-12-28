@@ -55,7 +55,7 @@ $allitems = $manager->getAllInventory();
             <td><?php echo $inventory['unit']; ?></td>
             <td><?php echo $inventory['expiry_date']; ?></td>
             <td><?php echo $inventory['category_name']; ?></td>
-            <td><a><button>addieren</button></a></td>
+            <td><a><button type="submit">addieren</button></a></td>
             <td><a href="index.php?action=delete_inventory&inventory_id=<?php echo $inventory['inventory_id']; ?>">Löschen</a></td>
         <tr>
         <?php endforeach; ?>

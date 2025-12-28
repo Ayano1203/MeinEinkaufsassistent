@@ -24,7 +24,7 @@ include("config/config.php");
 <body>
 <div class="container">
 <h2>Neue Artikel zur Vorratsliste hinzufügen</h2>
-<form method='post' action=''>
+<form method='post' action='index.php?action=create_inventory'>
     <label>Produktname :</label>
     <input type= "text" list="product_list" name="product_name" id="product_input" placeholder="Produkt wählen oder eingeben...">
     <datalist id="product_list">
